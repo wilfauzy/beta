@@ -1,17 +1,17 @@
-const CACHE_NAME = 'crypto-tracker-v1';
+const CACHE_NAME = 'cyber-crypto-v1';
 const ASSETS = [
     '/',
     '/index.html',
     '/styles.css',
     '/app.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
+    '/icon-192x192.png',
+    '/icon-512x512.png'
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(ASSETS))
-    );
 });
 
 self.addEventListener('fetch', (event) => {

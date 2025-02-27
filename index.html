@@ -1,58 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Live cryptocurrency prices tracker - Top 100 cryptocurrencies with real-time updates">
-    <meta name="keywords" content="crypto, cryptocurrency, bitcoin, ethereum, blockchain, prices">
-    <title>CryptoLiveTracker - Real-time Cryptocurrency Prices</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="description" content="Live cryptocurrency prices tracker with cyberpunk design">
+    <meta name="keywords" content="crypto, cryptocurrency, bitcoin, blockchain, prices">
+    <title>CyberCrypto - Live Cryptocurrency Prices</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Cyberpunk Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --cyber-purple: #bc00dd;
+            --dark-bg: #0a0a0a;
+            --cyber-gradient: linear-gradient(45deg, var(--neon-blue), var(--cyber-purple));
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #fff;
+            font-family: 'Roboto Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 1rem;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--neon-blue);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        #walletButton {
+            background: var(--cyber-gradient);
+            border: 1px solid var(--neon-blue);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #cryptoTable {
+            width: 100%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            border-collapse: collapse;
+        }
+
+        #cryptoTable th, #cryptoTable td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        #cryptoTable th {
+            background-color: rgba(0, 243, 255, 0.1);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .price-up {
+            color: #00ff00;
+        }
+
+        .price-down {
+            color: #ff0000;
+        }
+
+        footer {
+            margin-top: auto;
+            background: rgba(10, 10, 10, 0.95);
+            padding: 2rem;
+            border-top: 2px solid var(--neon-blue);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .social-links a {
+            color: var(--neon-blue);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            #cryptoTable {
+                font-size: 0.8rem;
+            }
+            
+            #cryptoTable th, #cryptoTable td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <div class="logo">CryptoLive₿</div>
-            <div class="nav-items">
-                <button id="connectWallet" class="wallet-btn">
-                    <i class="fas fa-wallet"></i> Connect Wallet
-                </button>
-            </div>
-        </nav>
+        <div class="header-content">
+            <h1>CyberCrypto</h1>
+            <button id="walletButton">Connect Wallet</button>
+        </div>
     </header>
 
     <main>
-        <div class="container">
-            <h1>Top 100 Cryptos</h1>
-            <div class="crypto-grid" id="cryptoContainer"></div>
-        </div>
+        <table id="cryptoTable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                    <th>Market Cap</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data akan diisi oleh JavaScript -->
+            </tbody>
+        </table>
     </main>
 
     <footer>
-        <div class="footer-content">
-            <div class="social-links">
-                <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="https://t.me" target="_blank"><i class="fab fa-telegram"></i></a>
-                <a href="mailto:contact@example.com"><i class="fas fa-envelope"></i></a>
-            </div>
-            <div class="footer-info">
-                <p>&copy; 2023 CryptoLiveTracker. All rights reserved.</p>
-            </div>
+        <div class="social-links">
+            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://telegram.org" target="_blank"><i class="fab fa-telegram"></i></a>
         </div>
     </footer>
 
-    <script src="app.js"></script>
     <script>
-        // PWA Service Worker Registration
+        // Fetch Crypto Data
+        async function fetchCryptoData() {
+            try {
+                const response = await fetch(
+                    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false'
+                );
+                const data = await response.json();
+                updateTable(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Update Table
+        function updateTable(data) {
+            const tbody = document.querySelector('#cryptoTable tbody');
+            tbody.innerHTML = '';
+
+            data.forEach(coin => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${coin.market_cap_rank}</td>
+                    <td>
+                        <img src="${coin.image}" alt="${coin.name}" width="20">
+                        ${coin.name} (${coin.symbol.toUpperCase()})
+                    </td>
+                    <td>$${coin.current_price.toLocaleString()}</td>
+                    <td class="${coin.price_change_percentage_24h >= 0 ? 'price-up' : 'price-down'}">
+                        ${coin.price_change_percentage_24h.toFixed(2)}%
+                    </td>
+                    <td>$${coin.market_cap.toLocaleString()}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Auto Refresh
+        setInterval(fetchCryptoData, 30000);
+
+        // Initial Load
+        fetchCryptoData();
+
+        // Wallet Connect
+        document.getElementById('walletButton').addEventListener('click', async () => {
+            try {
+                // Implement wallet connection logic here
+                console.log('Connecting wallet...');
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+            }
+        });
+
+        // PWA Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('ServiceWorker registration successful');
+                        console.log('ServiceWorker registered');
                     })
                     .catch(err => {
                         console.log('ServiceWorker registration failed: ', err);
