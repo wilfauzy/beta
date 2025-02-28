@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Crypto Live - Pantau harga cryptocurrency terbaru dan berita terkini seputar dunia kripto">
-    <title>Crypto Live - Harga Cryptocurrency Real-Time</title>
+    <meta name="description" content="Crypto Live - Berita terkini seputar dunia cryptocurrency">
+    <title>Crypto Live - Berita Kripto Terkini</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <!-- SEO Tags -->
-    <meta property="og:title" content="Crypto Live">
-    <meta property="og:description" content="Pantau harga cryptocurrency real-time dan berita terkini">
-    <meta property="og:image" content="https://crypt.web.id/logo.png">
-    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:title" content="Crypto Live - Berita Kripto">
+    <meta property="og:description" content="Update berita terbaru seputar cryptocurrency">
+    <meta property="og:image" content="https://crypt.web.id/news-og.png">
 </head>
 <body>
     <header>
@@ -33,33 +32,28 @@
         </nav>
     </header>
 
-    <section class="hero">
+    <section class="hero news-hero">
         <div class="hero-content">
-            <h2>Pantau Pergerakan Harga Kripto Real-Time</h2>
-            <p>Update harga cryptocurrency top 100 setiap 30 detik</p>
+            <h2>Berita Cryptocurrency Terkini</h2>
+            <p>Update terbaru seputar dunia blockchain dan aset kripto</p>
         </div>
     </section>
 
-    <main>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Cari cryptocurrency...">
+    <main class="news-main">
+        <div class="news-filter">
+            <select id="currencyFilter">
+                <option value="ALL">Semua Mata Uang</option>
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="BNB">Binance Coin (BNB)</option>
+            </select>
         </div>
-        <div class="crypto-list-container">
-            <table id="cryptoTable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nama</th>
-                        <th>Harga</th>
-                        <th>24h%</th>
-                        <th>Kap Pasar</th>
-                    </tr>
-                </thead>
-                <tbody id="cryptoList">
-                    <!-- Data akan diisi oleh JavaScript -->
-                </tbody>
-            </table>
+        
+        <div class="news-container" id="newsContainer">
+            <!-- News items will be loaded here -->
         </div>
+
+        <button class="load-more" id="loadMore">Muat Lebih Banyak</button>
     </main>
 
     <footer>
@@ -72,6 +66,6 @@
         <p>&copy; 2024 Crypto Live. All rights reserved.</p>
     </footer>
 
-    <script src="app.js"></script>
+    <script src="news.js"></script>
 </body>
 </html>

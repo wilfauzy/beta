@@ -1,114 +1,85 @@
-:root {
-    --primary-color: #2ecc71;
-    --bg-color: #1a1a1a;
-    --text-color: #ffffff;
-    --card-bg: #2d2d2d;
-    --border-color: #3d3d3d;
+/* News Page Styles */
+.news-hero {
+    background: linear-gradient(45deg, #2ecc71, #1abc9c);
 }
 
-[data-theme="light"] {
-    --bg-color: #ffffff;
-    --text-color: #1a1a1a;
-    --card-bg: #f5f5f5;
-    --border-color: #e0e0e0;
+.news-main {
+    padding: 2rem 5%;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
+.news-filter {
+    margin-bottom: 2rem;
+    text-align: right;
 }
 
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.6;
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 5%;
-    background-color: var(--card-bg);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-}
-
-.hero {
-    padding: 120px 5% 60px;
-    text-align: center;
-    background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
-}
-
-.crypto-list-container {
-    padding: 0 5%;
-    margin: 2rem auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-th {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-    }
-    
-    .hamburger {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        cursor: pointer;
-    }
-    
-    table {
-        font-size: 14px;
-    }
-    
-    th, td {
-        padding: 0.75rem;
-    }
-}
-
-/* Dark Mode Toggle */
-#themeToggle {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-/* PWA Styles */
-.install-btn {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    background: var(--primary-color);
-    color: white;
+#currencyFilter {
     padding: 0.5rem 1rem;
     border-radius: 5px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.news-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.news-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+}
+
+.news-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.news-source {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.news-date {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 1rem;
+}
+
+.news-snippet {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.news-link {
+    display: inline-block;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.load-more {
+    display: block;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    display: none;
+}
+
+@media (max-width: 768px) {
+    .news-container {
+        grid-template-columns: 1fr;
+    }
 }
