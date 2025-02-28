@@ -3,412 +3,701 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Price Tracker - Live Updates</title>
+    <meta name="description" content="Live cryptocurrency price tracker with real-time updates from CoinGecko API">
+    <meta name="keywords" content="cryptocurrency, bitcoin, ethereum, crypto prices, live crypto">
+    <meta name="author" content="Crypto Tracker">
+    <title>Retro Crypto Tracker</title>
+    <link rel="manifest" href="#" id="manifest">
+    <meta name="theme-color" content="#121212">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
     <style>
         :root {
             --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --primary-text: #ffffff;
-            --secondary-text: #a0a0a0;
-            --accent-color: #3a86ff;
-            --positive: #4caf50;
-            --negative: #f44336;
-            --card-radius: 12px;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --text-color: #e0e0e0;
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --accent-color: #ffd166;
+            --dark-accent: #2a2a2a;
+            --border-color: #333;
+            --header-height: 60px;
+            --footer-height: 60px;
+            --font-mono: 'Courier New', monospace;
+            --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background-color: var(--bg-color);
-            color: var(--primary-text);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
-            padding: 16px;
         }
-        
+
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px 0;
+            padding: 0 20px;
         }
-        
+
         header {
+            height: var(--header-height);
+            background-color: var(--dark-accent);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 16px;
+            width: 100%;
         }
-        
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary-text);
-        }
-        
-        .status {
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: var(--secondary-text);
-            background-color: var(--card-bg);
-            padding: 8px 16px;
-            border-radius: 20px;
+            gap: 10px;
         }
-        
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--accent-color);
-            animation: pulse 2s infinite;
+
+        .logo span {
+            color: var(--secondary-color);
         }
-        
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.4;
-            }
-            100% {
-                opacity: 1;
-            }
+
+        .search-bar {
+            position: relative;
+            max-width: 300px;
+            width: 100%;
         }
-        
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            border-radius: 4px;
+        }
+
+        main {
+            margin-top: var(--header-height);
+            margin-bottom: var(--footer-height);
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .update-timer {
+            font-size: 14px;
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: var(--font-mono);
+        }
+
         .crypto-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
+            margin-top: 20px;
         }
-        
+
         .crypto-card {
-            background-color: var(--card-bg);
-            border-radius: var(--card-radius);
+            background-color: var(--dark-accent);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             padding: 20px;
-            box-shadow: var(--card-shadow);
-            transition: transform 0.2s;
-            cursor: pointer;
+            transition: transform 0.3s ease;
         }
-        
+
         .crypto-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
-        .crypto-header {
+
+        .crypto-card-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
-        
-        .crypto-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
+
+        .crypto-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
         }
-        
+
         .crypto-name {
-            flex-grow: 1;
+            font-weight: bold;
+            font-size: 18px;
         }
-        
+
         .crypto-symbol {
-            font-weight: 600;
-            font-size: 1.1rem;
+            color: var(--accent-color);
+            font-size: 14px;
+            margin-left: 8px;
         }
-        
-        .crypto-fullname {
-            color: var(--secondary-text);
-            font-size: 0.8rem;
-        }
-        
+
         .crypto-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
         }
-        
+
         .crypto-change {
-            font-size: 0.9rem;
-            font-weight: 500;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
+            font-size: 16px;
+            margin-bottom: 10px;
         }
-        
+
         .positive {
-            background-color: rgba(76, 175, 80, 0.15);
-            color: var(--positive);
+            color: #4ecdc4;
         }
-        
+
         .negative {
-            background-color: rgba(244, 67, 54, 0.15);
-            color: var(--negative);
+            color: #ff6b6b;
         }
-        
-        .crypto-details {
-            margin-top: 16px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
+
+        .crypto-market-cap {
+            font-size: 14px;
+            color: #aaa;
         }
-        
-        .detail-item {
-            margin-top: 8px;
-        }
-        
-        .detail-label {
-            font-size: 0.8rem;
-            color: var(--secondary-text);
-        }
-        
-        .detail-value {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        
+
         .loader {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 60vh;
+            margin: 40px 0;
         }
-        
-        .loader-circle {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: var(--accent-color);
-            border-radius: 50%;
-            animation: rotate 1s linear infinite;
-        }
-        
-        @keyframes rotate {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        
-        .error-message {
-            text-align: center;
-            padding: 24px;
-            background-color: var(--card-bg);
-            border-radius: var(--card-radius);
-            color: var(--negative);
-        }
-        
-        footer {
-            margin-top: 40px;
-            text-align: center;
-            color: var(--secondary-text);
-            font-size: 0.8rem;
-        }
-        
-        .timestamp {
-            margin-bottom: 8px;
-        }
-        
-        .attribution {
-            margin-top: 8px;
-        }
-        
-        .attribution a {
+
+        .loader-text {
+            font-family: var(--font-mono);
             color: var(--accent-color);
-            text-decoration: none;
+            font-size: 18px;
+            position: relative;
         }
-        
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.4rem;
-            }
-            
-            header {
+
+        .loader-text:after {
+            content: "";
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60% { content: "..."; }
+            80%, 100% { content: ""; }
+        }
+
+        footer {
+            height: var(--footer-height);
+            background-color: var(--dark-accent);
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--primary-color);
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .retro-border {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid var(--primary-color);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .no-results {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--accent-color);
+            font-family: var(--font-mono);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
                 flex-direction: column;
-                align-items: flex-start;
+                padding: 10px 0;
             }
-            
-            .crypto-details {
+
+            header {
+                height: auto;
+            }
+
+            main {
+                margin-top: 100px;
+            }
+
+            .search-bar {
+                margin-top: 10px;
+                max-width: 100%;
+            }
+
+            .crypto-grid {
                 grid-template-columns: 1fr;
             }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                padding: 10px 0;
+            }
+
+            footer {
+                height: auto;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        /* PWA Install Button */
+        .install-pwa {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 8px 12px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 10px;
+            display: none;
+        }
+
+        .install-pwa:hover {
+            background-color: var(--accent-color);
+        }
+
+        /* Top Buttons */
+        .top-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            background-color: var(--dark-accent);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Crypto Price Tracker</h1>
-            <div class="status">
-                <div class="status-indicator"></div>
-                <span class="status-text">Live Updates (30s)</span>
-            </div>
-        </header>
-        
-        <div id="crypto-container" class="crypto-grid">
-            <div class="loader">
-                <div class="loader-circle"></div>
+    <div class="retro-border"></div>
+    
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">RETRO<span>CRYPTO</span> <span class="blink">_</span></a>
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search cryptocurrency...">
             </div>
         </div>
-        
-        <footer>
-            <div class="timestamp">Last Updated: <span id="last-update">-</span></div>
-            <div class="counter">Next update in <span id="countdown">30</span>s</div>
-            <div class="attribution">Powered by <a href="https://www.coingecko.com/api" target="_blank" rel="noopener">CoinGecko API</a></div>
-        </footer>
-    </div>
-    
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="update-timer">
+                <span>AUTO-REFRESH IN </span><span id="timer">30</span><span> SECONDS</span>
+            </div>
+
+            <div class="top-buttons">
+                <button class="filter-btn active" data-sort="market_cap_desc">TOP COINS</button>
+                <button class="filter-btn" data-sort="volume_desc">VOLUME</button>
+                <button class="filter-btn" data-sort="price_change_24h_desc">GAINERS</button>
+                <button class="filter-btn" data-sort="price_change_24h_asc">LOSERS</button>
+            </div>
+
+            <div id="loader" class="loader">
+                <div class="loader-text">LOADING CRYPTO DATA</div>
+            </div>
+
+            <div id="cryptoGrid" class="crypto-grid"></div>
+            <div id="noResults" class="no-results" style="display: none;">NO RESULTS FOUND</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="social-links">
+                <a href="#" class="social-link">TWITTER</a>
+                <a href="#" class="social-link">GITHUB</a>
+                <a href="#" class="social-link">TELEGRAM</a>
+            </div>
+            <div class="copyright">&copy; 2025 RETROCRYPTO - POWERED BY COINGECKO API</div>
+            <button id="installPWA" class="install-pwa">INSTALL APP</button>
+        </div>
+    </footer>
+
     <script>
-        const cryptoContainer = document.getElementById('crypto-container');
-        const lastUpdateEl = document.getElementById('last-update');
-        const countdownEl = document.getElementById('countdown');
-        
-        // List of cryptocurrencies to display
-        const cryptos = [
-            'bitcoin', 
-            'ethereum', 
-            'binancecoin', 
-            'ripple', 
-            'cardano', 
-            'solana', 
-            'polkadot', 
-            'dogecoin',
-            'tron',
-            'litecoin',
-            'chainlink',
-            'uniswap'
-        ];
-        
-        // Format numbers with commas
+        // Global variables
+        let cryptoData = [];
+        let timer = 30;
+        let timerInterval;
+        let currentSort = 'market_cap_desc';
+        let deferredPrompt;
+
+        // DOM elements
+        const cryptoGrid = document.getElementById('cryptoGrid');
+        const loader = document.getElementById('loader');
+        const timerElement = document.getElementById('timer');
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('noResults');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const installButton = document.getElementById('installPWA');
+
+        // Function to format numbers
         function formatNumber(num) {
-            return new Intl.NumberFormat('id-ID').format(num);
-        }
-        
-        // Format currency
-        function formatCurrency(num) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 8
-            }).format(num);
-        }
-        
-        // Format percentage
-        function formatPercentage(num) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(num / 100);
-        }
-        
-        // Create a card for each cryptocurrency
-        function createCryptoCard(crypto) {
-            const price = crypto.current_price;
-            const priceChange = crypto.price_change_percentage_24h;
-            const changeClass = priceChange >= 0 ? 'positive' : 'negative';
-            const changeSymbol = priceChange >= 0 ? '▲' : '▼';
+            if (num === null || num === undefined) return 'N/A';
             
-            return `
-                <div class="crypto-card">
-                    <div class="crypto-header">
-                        <img class="crypto-icon" src="${crypto.image}" alt="${crypto.name}">
-                        <div class="crypto-name">
-                            <div class="crypto-symbol">${crypto.symbol.toUpperCase()}</div>
-                            <div class="crypto-fullname">${crypto.name}</div>
-                        </div>
-                    </div>
-                    <div class="crypto-price">${formatCurrency(price)}</div>
-                    <div class="crypto-change ${changeClass}">
-                        ${changeSymbol} ${formatPercentage(Math.abs(priceChange))}
-                    </div>
-                    <div class="crypto-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Market Cap</div>
-                            <div class="detail-value">${formatCurrency(crypto.market_cap)}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Volume (24h)</div>
-                            <div class="detail-value">${formatCurrency(crypto.total_volume)}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">High (24h)</div>
-                            <div class="detail-value">${formatCurrency(crypto.high_24h)}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Low (24h)</div>
-                            <div class="detail-value">${formatCurrency(crypto.low_24h)}</div>
-                        </div>
-                    </div>
+            // For price formatting
+            if (num < 0.000001) return num.toExponential(4);
+            if (num < 0.001) return num.toFixed(8);
+            if (num < 1) return num.toFixed(4);
+            if (num < 1000) return num.toFixed(2);
+            
+            // For larger numbers (market cap, volume, etc.)
+            if (num >= 1000000000) return `$${(num / 1000000000).toFixed(2)}B`;
+            if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
+            if (num >= 1000) return `$${(num / 1000).toFixed(2)}K`;
+            
+            return `$${num.toFixed(2)}`;
+        }
+
+        // Function to format percent
+        function formatPercent(num) {
+            if (num === null || num === undefined) return 'N/A';
+            return `${num > 0 ? '+' : ''}${num.toFixed(2)}%`;
+        }
+
+        // Function to create crypto cards
+        function createCryptoCard(crypto) {
+            const card = document.createElement('div');
+            card.className = 'crypto-card';
+            
+            const priceChangeClass = crypto.price_change_percentage_24h > 0 ? 'positive' : 'negative';
+            
+            card.innerHTML = `
+                <div class="crypto-card-header">
+                    <img src="${crypto.image}" alt="${crypto.name}" class="crypto-logo">
+                    <div class="crypto-name">${crypto.name}</div>
+                    <div class="crypto-symbol">${crypto.symbol.toUpperCase()}</div>
+                </div>
+                <div class="crypto-price">$${crypto.current_price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 8})}</div>
+                <div class="crypto-change ${priceChangeClass}">
+                    ${formatPercent(crypto.price_change_percentage_24h)}
+                </div>
+                <div class="crypto-market-cap">
+                    Market Cap: ${formatNumber(crypto.market_cap)}
                 </div>
             `;
+            
+            return card;
         }
-        
-        // Fetch cryptocurrency data from CoinGecko API
+
+        // Function to fetch cryptocurrency data
         async function fetchCryptoData() {
+            loader.style.display = 'flex';
+            cryptoGrid.style.display = 'none';
+            noResults.style.display = 'none';
+            
             try {
-                cryptoContainer.innerHTML = '<div class="loader"><div class="loader-circle"></div></div>';
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=${currentSort}&per_page=50&page=1&sparkline=false&price_change_percentage=24h`);
+                if (!response.ok) throw new Error('Network response was not ok');
                 
-                const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${cryptos.join(',')}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`);
+                cryptoData = await response.json();
+                displayCryptoData(cryptoData);
                 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                
-                const data = await response.json();
-                
-                // Create HTML for all crypto cards
-                let cryptoCardsHTML = '';
-                data.forEach(crypto => {
-                    cryptoCardsHTML += createCryptoCard(crypto);
-                });
-                
-                // Update the container with all cards
-                cryptoContainer.innerHTML = cryptoCardsHTML;
-                
-                // Update last update time
-                const now = new Date();
-                lastUpdateEl.textContent = now.toLocaleTimeString('id-ID');
-                
-                // Start countdown
-                startCountdown();
-                
+                // Reset and start timer
+                resetTimer();
             } catch (error) {
-                console.error('Error fetching crypto data:', error);
-                cryptoContainer.innerHTML = `
-                    <div class="error-message">
-                        <p>Gagal memuat data. Silakan coba lagi nanti.</p>
-                        <p>${error.message}</p>
-                    </div>
-                `;
+                console.error('Error fetching data:', error);
+                cryptoGrid.innerHTML = `<div class="no-results">Error fetching data. Will retry in 30 seconds.</div>`;
+                cryptoGrid.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
             }
         }
-        
-        // Countdown timer for next update
-        function startCountdown() {
-            let seconds = 30;
-            countdownEl.textContent = seconds;
+
+        // Function to display cryptocurrency data
+        function displayCryptoData(data) {
+            cryptoGrid.innerHTML = '';
             
-            const timer = setInterval(() => {
-                seconds--;
-                countdownEl.textContent = seconds;
+            if (data.length === 0) {
+                noResults.style.display = 'block';
+                cryptoGrid.style.display = 'none';
+                return;
+            }
+            
+            data.forEach(crypto => {
+                const card = createCryptoCard(crypto);
+                cryptoGrid.appendChild(card);
+            });
+            
+            cryptoGrid.style.display = 'grid';
+            noResults.style.display = 'none';
+        }
+
+        // Function to filter cryptocurrency data
+        function filterCryptoData() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm === '') {
+                displayCryptoData(cryptoData);
+                return;
+            }
+            
+            const filteredData = cryptoData.filter(crypto => 
+                crypto.name.toLowerCase().includes(searchTerm) || 
+                crypto.symbol.toLowerCase().includes(searchTerm)
+            );
+            
+            displayCryptoData(filteredData);
+        }
+
+        // Function to reset and start timer
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timer = 30;
+            timerElement.textContent = timer;
+            
+            timerInterval = setInterval(() => {
+                timer--;
+                timerElement.textContent = timer;
                 
-                if (seconds <= 0) {
-                    clearInterval(timer);
+                if (timer <= 0) {
                     fetchCryptoData();
                 }
             }, 1000);
         }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterCryptoData);
         
-        // Initial data fetch
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                currentSort = button.dataset.sort;
+                fetchCryptoData();
+            });
+        });
+
+        // PWA Support
+        const manifestData = {
+            "name": "Retro Crypto Tracker",
+            "short_name": "RetroCrypto",
+            "description": "Live cryptocurrency price tracker with real-time updates",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#121212",
+            "theme_color": "#121212",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>",
+                    "sizes": "192x192",
+                    "type": "image/svg+xml"
+                }
+            ]
+        };
+
+        const manifestString = JSON.stringify(manifestData);
+        const manifestBlob = new Blob([manifestString], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        document.getElementById('manifest').setAttribute('href', manifestURL);
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+
+        // PWA Install Event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                installButton.style.display = 'none';
+            });
+        });
+
+        // Fetch data on load
         fetchCryptoData();
+
+        // Add this code for responsive menu on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if viewport width is for mobile
+            const checkMobile = () => {
+                if (window.innerWidth <= 768) {
+                    document.querySelector('header').style.position = 'relative';
+                    document.querySelector('main').style.marginTop = '20px';
+                } else {
+                    document.querySelector('header').style.position = 'fixed';
+                    document.querySelector('main').style.marginTop = 'var(--header-height)';
+                }
+            };
+
+            // Run on load and resize
+            checkMobile();
+            window.addEventListener('resize', checkMobile);
+        });
+    </script>
+
+    <!-- Simple Service Worker for PWA -->
+    <script>
+        // This code creates a Service Worker script on the fly
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'retro-crypto-cache-v1';
+                const urlsToCache = [
+                    '/',
+                    '/index.html'
+                ];
+
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then(response => {
+                                if (response) {
+                                    return response;
+                                }
+                                return fetch(event.request)
+                                    .then(response => {
+                                        if (!response || response.status !== 200 || response.type !== 'basic') {
+                                            return response;
+                                        }
+                                        const responseToCache = response.clone();
+                                        caches.open(CACHE_NAME)
+                                            .then(cache => {
+                                                cache.put(event.request, responseToCache);
+                                            });
+                                        return response;
+                                    });
+                            })
+                    );
+                });
+
+                self.addEventListener('activate', event => {
+                    event.waitUntil(
+                        caches.keys().then(cacheNames => {
+                            return Promise.all(
+                                cacheNames.filter(cacheName => {
+                                    return cacheName !== CACHE_NAME;
+                                }).map(cacheName => {
+                                    return caches.delete(cacheName);
+                                })
+                            );
+                        })
+                    );
+                });
+            `;
+            
+            const swBlob = new Blob([swCode], {type: 'text/javascript'});
+            const swURL = URL.createObjectURL(swBlob);
+            
+            if (location.protocol === 'http:' || location.hostname === 'localhost') {
+                navigator.serviceWorker.register(swURL)
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('SW registration failed', err));
+            }
+        }
     </script>
 </body>
 </html>
