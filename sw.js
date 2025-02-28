@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crypto-live-v1';
+const CACHE_NAME = 'cryptowatch-v1';
 const ASSETS = [
     '/',
     '/index.html',

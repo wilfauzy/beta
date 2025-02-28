@@ -1,6 +1,6 @@
 {
-    "name": "CryptoLive",
-    "short_name": "CryptoLive",
+    "name": "CryptoWatch",
+    "short_name": "CryptoWatch",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#1a1a1a",
