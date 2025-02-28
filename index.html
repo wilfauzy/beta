@@ -1,71 +1,166 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Crypto Live - Berita terkini seputar dunia cryptocurrency">
-    <title>Crypto Live - Berita Kripto Terkini</title>
-    <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <!-- SEO Tags -->
-    <meta property="og:title" content="Crypto Live - Berita Kripto">
-    <meta property="og:description" content="Update berita terbaru seputar cryptocurrency">
-    <meta property="og:image" content="https://crypt.web.id/news-og.png">
+    <title>Crypto News Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #2d2d2d;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 80px;
+        }
+
+        .news-card {
+            background-color: #2d2d2d;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #00ff88;
+        }
+
+        .news-snippet {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+
+        .news-meta {
+            font-size: 0.8rem;
+            color: #888888;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .crypto-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background-color: #3d3d3d;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <div class="logo">
-                <h1><a href="/">Crypto Live</a></h1>
-            </div>
-            <ul class="nav-links">
-                <li><a href="/">Beranda</a></li>
-                <li><a href="news.html">Berita</a></li>
-                <li><button id="themeToggle"><i class="fas fa-moon"></i></button></li>
-            </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+        <nav class="container">
+            <div class="logo">CRYPTO NEWS</div>
         </nav>
     </header>
 
-    <section class="hero news-hero">
-        <div class="hero-content">
-            <h2>Berita Cryptocurrency Terkini</h2>
-            <p>Update terbaru seputar dunia blockchain dan aset kripto</p>
-        </div>
-    </section>
-
-    <main class="news-main">
-        <div class="news-filter">
-            <select id="currencyFilter">
-                <option value="ALL">Semua Mata Uang</option>
-                <option value="BTC">Bitcoin (BTC)</option>
-                <option value="ETH">Ethereum (ETH)</option>
-                <option value="BNB">Binance Coin (BNB)</option>
-            </select>
-        </div>
-        
-        <div class="news-container" id="newsContainer">
-            <!-- News items will be loaded here -->
-        </div>
-
-        <button class="load-more" id="loadMore">Muat Lebih Banyak</button>
+    <main class="container">
+        <div id="news-container" class="news-grid"></div>
+        <div id="loading" class="loading">Memuat berita...</div>
     </main>
 
-    <footer>
-        <div class="social-links">
-            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
-        </div>
-        <p>&copy; 2024 Crypto Live. All rights reserved.</p>
-    </footer>
+    <script>
+        const API_KEY = '44ec1a7c6769c099e4defd3756cac0400f57165c'; // Dapatkan API key dari https://cryptopanic.com/developers/
+        const NEWS_API_URL = `https://cryptopanic.com/api/v1/posts/?auth_token=${API_KEY}&public=true`;
 
-    <script src="news.js"></script>
+        const newsContainer = document.getElementById('news-container');
+        const loading = document.getElementById('loading');
+
+        async function fetchNews() {
+            try {
+                const response = await fetch(NEWS_API_URL);
+                const data = await response.json();
+                displayNews(data.results);
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                loading.innerHTML = 'Gagal memuat berita. Silakan coba lagi.';
+            }
+        }
+
+        function displayNews(articles) {
+            loading.style.display = 'none';
+            newsContainer.innerHTML = articles.map(article => `
+                <a href="${article.url}" target="_blank" rel="noopener noreferrer">
+                    <div class="news-card">
+                        <h2 class="news-title">${article.title}</h2>
+                        <p class="news-snippet">${article.meta.description}</p>
+                        <div class="news-meta">
+                            <span>${article.source.domain}</span>
+                            <span>${new Date(article.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div class="crypto-tags">
+                            ${article.currencies.map(currency => `
+                                <span class="tag">${currency.code}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        fetchNews();
+    </script>
 </body>
 </html>
