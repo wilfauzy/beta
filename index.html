@@ -3,266 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Live - Top 100 Crypto</title>
-    <meta name="description" content="Live tracking of top 100 cryptocurrency prices with retro pixel design. Auto-refreshing every 30 seconds with dark mode and PWA support.">
+    <title>CryptoPulse - Live Top 100 Cryptocurrency Prices</title>
+    <meta name="description" content="Real-time tracking of top 100 cryptocurrencies with live prices, market data, and cyberpunk-inspired interface.">
+    <meta name="keywords" content="cryptocurrency, crypto prices, bitcoin, ethereum, blockchain, crypto market">
     
-    <!-- SEO Tags -->
-    <meta name="keywords" content="crypto, cryptocurrency, bitcoin, ethereum, blockchain, prices, live prices">
-    <meta property="og:title" content="PixelCrypto Live">
-    <meta property="og:description" content="Live cryptocurrency prices with retro pixel design">
-    <meta property="og:image" content="icon-512x512.png">
-    
-    <!-- PWA Manifest -->
+    <!-- PWA Requirements -->
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <meta name="theme-color" content="#0a0a0a">
     
-    <!-- Styles -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="CryptoPulse - Live Crypto Prices">
+    <meta property="og:description" content="Real-time tracking of top 100 cryptocurrencies">
+    <meta property="og:image" content="https://example.com/og-image.jpg">
+    
+    <!-- Styles & Fonts -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary: #00ff00;
-            --bg: #000000;
-            --scan-line: rgba(0, 255, 0, 0.05);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Courier New', monospace;
-            background-color: var(--bg);
-            color: var(--primary);
-            line-height: 1.6;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* CRT Effect */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                var(--scan-line) 0px,
-                var(--scan-line) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 999;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 2rem 0;
-            border-bottom: 4px solid var(--primary);
-        }
-
-        h1 {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 2rem;
-            text-shadow: 0 0 10px var(--primary);
-        }
-
-        #crypto-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-        }
-
-        #crypto-table th,
-        #crypto-table td {
-            padding: 1rem;
-            text-align: center;
-            border: 1px solid var(--primary);
-        }
-
-        #crypto-table th {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 0.8rem;
-        }
-
-        .price-up {
-            color: #00ff00;
-        }
-
-        .price-down {
-            color: #ff0000;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            border-top: 4px solid var(--primary);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 1rem 0;
-        }
-
-        .social-links a {
-            color: var(--primary);
-            font-size: 1.5rem;
-            transition: 0.3s;
-        }
-
-        .social-links a:hover {
-            text-shadow: 0 0 10px var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            #crypto-table th,
-            #crypto-table td {
-                padding: 0.5rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        /* PWA Install Button */
-        #installBtn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background: var(--primary);
-            color: var(--bg);
-            border: none;
-            cursor: pointer;
-            font-family: 'Press Start 2P', cursive;
-            display: none;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>PixelCrypto Live</h1>
-        </header>
+    <header class="cyber-header">
+        <h1><span class="cyber-glitch">Crypto</span>Live</h1>
+        <p class="cyber-subtitle">Real-time Market Data Feed</p>
+    </header>
 
-        <table id="crypto-table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Coin</th>
-                    <th>Price</th>
-                    <th>24h Change</th>
-                    <th>Market Cap</th>
-                </tr>
-            </thead>
-            <tbody id="crypto-data">
-                <!-- Data akan diisi oleh JavaScript -->
-            </tbody>
-        </table>
+    <main>
+        <div class="grid-container" id="cryptoGrid"></div>
+    </main>
 
-        <footer>
-            <div class="social-links">
-                <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://telegram.org" target="_blank"><i class="fab fa-telegram"></i></a>
-            </div>
-            <p>© 2024 PixelCrypto Live - All Rights Reserved</p>
-        </footer>
-    </div>
+    <footer class="cyber-footer">
+        <div class="social-links">
+            <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://telegram.org" target="_blank" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+            <a href="https://discord.com" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
+        </div>
+        <div class="footer-disclaimer">
+            <p>Data updates every 30 seconds | Powered by CoinGecko API</p>
+            <p>© 2024 CryptoPulse. All data provided for informational purposes only.</p>
+        </div>
+    </footer>
 
-    <button id="installBtn">Install App</button>
+    <div id="loading" class="cyber-loader">Initializing Data Stream...</div>
 
-    <script>
-        // Fetch Crypto Data
-        async function fetchCryptoData() {
-            try {
-                const response = await fetch(
-                    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=100'
-                );
-                const data = await response.json();
-                updateTable(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
-
-        // Update Table
-        function updateTable(data) {
-            const tbody = document.getElementById('crypto-data');
-            tbody.innerHTML = '';
-
-            data.forEach((coin, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${coin.market_cap_rank}</td>
-                    <td>
-                        <img src="${coin.image}" alt="${coin.name}" width="20">
-                        ${coin.symbol.toUpperCase()}
-                    </td>
-                    <td>$${coin.current_price.toLocaleString()}</td>
-                    <td class="${coin.price_change_percentage_24h >= 0 ? 'price-up' : 'price-down'}">
-                        ${coin.price_change_percentage_24h?.toFixed(2) || '0.00'}%
-                    </td>
-                    <td>$${coin.market_cap.toLocaleString()}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Auto Refresh
-        setInterval(fetchCryptoData, 30000);
-        fetchCryptoData();
-
-        // PWA Installation
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block';
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
-                }
-                deferredPrompt = null;
-            }
-        });
-
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registered');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
