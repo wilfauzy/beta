@@ -1,10 +1,11 @@
-const CACHE_NAME = 'cryptopulse-v1';
+const CACHE_NAME = 'crypto-live-v1';
 const ASSETS = [
     '/',
     '/index.html',
     '/styles.css',
     '/app.js',
-    // Tambahkan path ke asset lainnya jika ada
+    '/icon-192.png',
+    '/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
