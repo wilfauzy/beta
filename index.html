@@ -1,243 +1,647 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Live Crypto Prices with Cyberpunk 2077 Style">
-    <meta name="keywords" content="crypto, cryptocurrency, bitcoin, cyberpunk, prices">
-    <title>CyberCrypto 2077</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="description" content="RetroCoins - Track live cryptocurrency prices with a retro design. Automatically refreshes every 30 seconds.">
+    <meta name="keywords" content="cryptocurrency, bitcoin, ethereum, crypto prices, retro crypto, live prices">
+    <meta name="theme-color" content="#2c2c54">
+    <title>RetroCoins - Live Cryptocurrency Tracker</title>
+    <link rel="manifest" href="#" id="manifest-placeholder">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
     <style>
-        /* CSS Cyberpunk Style */
         :root {
-            --neon-cyan: #0ff;
-            --neon-pink: #f0f;
-            --bg-dark: #000;
-            --text-primary: #fff;
+            --bg-color: #f0f0f0;
+            --text-color: #2c2c54;
+            --primary-color: #706fd3;
+            --secondary-color: #ff793f;
+            --card-color: #ffffff;
+            --border-color: #33333350;
+            --footer-color: #2c2c54;
+            --header-color: #706fd3;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --primary-color: #474787;
+            --secondary-color: #ff5252;
+            --card-color: #1e1e1e;
+            --border-color: #ffffff30;
+            --footer-color: #1e1e1e;
+            --header-color: #2c2c54;
+        }
+
+        @font-face {
+            font-family: 'VT323';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/VT323/1.0.0/VT323.woff2') format('woff2');
+            font-display: swap;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'VT323', monospace;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'Courier New', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
             line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
+            font-size: 18px;
         }
 
-        .glow {
-            text-shadow: 0 0 10px var(--neon-cyan);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        /* Header Styles */
-        .header {
-            padding: 1rem;
-            border-bottom: 3px solid var(--neon-pink);
-            box-shadow: 0 0 20px var(--neon-pink);
+        header {
+            background-color: var(--header-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            border-bottom: 4px solid var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .nav {
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
+        .logo {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0 var(--secondary-color);
         }
 
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+        .theme-toggle {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
         }
 
-        .search-box {
-            width: 100%;
-            padding: 1rem;
-            margin: 2rem 0;
-            background: transparent;
-            border: 2px solid var(--neon-cyan);
-            color: var(--text-primary);
-            font-size: 1.2rem;
+        .theme-toggle:hover {
+            background-color: white;
+            color: var(--primary-color);
         }
 
-        /* Crypto Table */
-        .crypto-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-        }
-
-        .crypto-table th,
-        .crypto-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--neon-cyan);
-        }
-
-        .crypto-table tr:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Footer Styles */
-        .footer {
-            background: #111;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
-
-        .social-links {
+        nav ul {
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            list-style: none;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            position: relative;
+            padding: 0.25rem 0;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-color);
+            background-color: var(--card-color);
+            color: var(--text-color);
+            border-radius: 4px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .refresh-info {
+            background-color: var(--card-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: 2px solid var(--border-color);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .crypto-table thead {
-                display: none;
-            }
+        .crypto-card {
+            background-color: var(--card-color);
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--border-color);
+        }
 
-            .crypto-table tr {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                margin-bottom: 1rem;
-            }
+        .crypto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 6px 6px 0 var(--border-color);
+        }
 
-            .nav-links {
-                display: none;
+        .crypto-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .crypto-symbol {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .crypto-price {
+            font-size: 1.8rem;
+            margin: 0.5rem 0;
+        }
+
+        .price-change {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .price-up {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .price-down {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .crypto-details {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        footer {
+            background-color: var(--footer-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-title {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50%;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .social-icon:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media screen and (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .crypto-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
             }
         }
 
-        /* PWA Badge */
-        .pwa-badge {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            background: var(--neon-pink);
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
+        /* Loading animation */
+        .loader {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 2rem auto;
+        }
+        .loader div {
+            position: absolute;
+            border: 4px solid var(--secondary-color);
+            opacity: 1;
+            border-radius: 50%;
+            animation: loader 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+        .loader div:nth-child(2) {
+            animation-delay: -0.5s;
+        }
+        @keyframes loader {
+            0% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                top: 0px;
+                left: 0px;
+                width: 72px;
+                height: 72px;
+                opacity: 0;
+            }
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--card-color);
+            border-radius: 4px;
+            grid-column: 1 / -1;
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <nav class="nav">
-            <h1 class="glow">⚡ CyberCrypto 2077</h1>
-            <div class="nav-links">
-                <a href="#home" class="glow">Home</a>
-                <a href="#market" class="glow">Market</a>
-                <a href="#about" class="glow">About</a>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">RetroCoins</h1>
+                <button class="theme-toggle" id="theme-toggle">DARK MODE</button>
             </div>
-        </nav>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Top Coins</a></li>
+                    <li><a href="#">Trending</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <main class="container">
-        <input type="text" class="search-box" placeholder="Search Crypto..." id="searchInput">
-        <table class="crypto-table" id="cryptoTable">
-            <thead>
-                <tr>
-                    <th>Coin</th>
-                    <th>Price</th>
-                    <th>24h Change</th>
-                    <th>Market Cap</th>
-                </tr>
-            </thead>
-            <tbody id="cryptoData">
-                <!-- Data will be populated by JS -->
-            </tbody>
-        </table>
+        <div class="controls">
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Search cryptocurrencies...">
+            </div>
+            <div class="refresh-info">
+                <span class="blink"></span>
+                <span>Live data refreshes in <span id="countdown">30</span>s</span>
+            </div>
+        </div>
+
+        <div id="crypto-grid" class="crypto-grid">
+            <div class="loader">
+                <div></div>
+                <div></div>
+            </div>
+        </div>
     </main>
 
-    <footer class="footer">
-        <div class="social-links">
-            <a href="#" class="glow"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="glow"><i class="fab fa-telegram"></i></a>
-            <a href="#" class="glow"><i class="fab fa-github"></i></a>
-        </div>
-        <div class="footer-menu">
-            <a href="#privacy" class="glow">Privacy Policy</a>
-            <a href="#terms" class="glow">Terms of Service</a>
-            <a href="#contact" class="glow">Contact</a>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">RetroCoins</h3>
+                    <p>Your retro-styled cryptocurrency tracker with live updates, search functionality, and mobile support.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Market Overview</a></li>
+                        <li><a href="#">Top Gainers</a></li>
+                        <li><a href="#">Top Losers</a></li>
+                        <li><a href="#">News & Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Crypto Glossary</a></li>
+                        <li><a href="#">Investment Guide</a></li>
+                        <li><a href="#">Trading Basics</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">Mobile App</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Feedback</a></li>
+                        <li><a href="#">Advertise</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 RetroCoins. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Fetch Crypto Data
-        async function fetchCryptoData() {
-            try {
-                const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false');
-                const data = await response.json();
-                updateTable(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
+        // Generate manifest file for PWA
+        const manifestData = {
+            "name": "RetroCoins - Live Cryptocurrency Tracker",
+            "short_name": "RetroCoins",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#2c2c54",
+            "theme_color": "#2c2c54",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>",
+                    "sizes": "192x192",
+                    "type": "image/svg+xml"
+                }
+            ]
+        };
+        
+        const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        document.getElementById('manifest-placeholder').href = manifestUrl;
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or use preferred-color-scheme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? 'LIGHT MODE' : 'DARK MODE';
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark) {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = 'LIGHT MODE';
+                localStorage.setItem('theme', 'dark');
             }
         }
-
-        // Update Table
-        function updateTable(data) {
-            const tbody = document.getElementById('cryptoData');
-            tbody.innerHTML = '';
-
-            data.forEach(coin => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <img src="${coin.image}" alt="${coin.name}" width="20">
-                        ${coin.name} (${coin.symbol.toUpperCase()})
-                    </td>
-                    <td>$${coin.current_price}</td>
-                    <td style="color: ${coin.price_change_percentage_24h >= 0 ? '#0f0' : '#f00'}">
-                        ${coin.price_change_percentage_24h.toFixed(2)}%
-                    </td>
-                    <td>$${coin.market_cap.toLocaleString()}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Search Functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#cryptoData tr');
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            rows.forEach(row => {
-                const name = row.textContent.toLowerCase();
-                row.style.display = name.includes(searchTerm) ? '' : 'none';
-            });
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            themeToggle.textContent = newTheme === 'dark' ? 'LIGHT MODE' : 'DARK MODE';
         });
 
-        // Auto Refresh
-        setInterval(fetchCryptoData, 30000);
-
-        // Initial Load
-        fetchCryptoData();
-
-        // PWA Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registered');
-                    }).catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
+        // API integration for cryptocurrency data
+        const cryptoGrid = document.getElementById('crypto-grid');
+        const searchInput = document.getElementById('search-input');
+        const countdownElement = document.getElementById('countdown');
+        
+        let cryptoData = [];
+        let countdown = 30;
+        let searchTerm = '';
+        
+        // Fetch cryptocurrency data
+        async function fetchCryptoData() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                // Fallback data in case API fails
+                return generateFallbackData();
+            }
         }
-    </script>
-</body>
-</html>
+        
+        // Generate fallback data if API fails
+        function generateFallbackData() {
+            const coins = [
+                { id: 'bitcoin', symbol: 'btc', name: 'Bitcoin', current_price: 53712.48, price_change_percentage_24h: 2.5, market_cap: 1028745982345, total_volume: 38726459834 },
+                { id: 'ethereum', symbol: 'eth', name: 'Ethereum', current_price: 3125.78, price_change_percentage_24h: -1.2, market_cap: 367298374528, total_volume: 18345927463 },
+                { id: 'binancecoin', symbol: 'bnb', name: 'Binance Coin', current_price: 476.32, price_change_percentage_24h: 0.8, market_cap: 78926534726, total_volume: 2384769253 },
+                { id: 'solana', symbol: 'sol', name: 'Solana', current_price: 123.45, price_change_percentage_24h: 5.3, market_cap: 47863542189, total_volume: 3842567123 },
+                { id: 'cardano', symbol: 'ada', name: 'Cardano', current_price: 0.78, price_change_percentage_24h: -0.5, market_cap: 23987654321, total_volume: 1234567890 },
+                { id: 'ripple', symbol: 'xrp', name: 'XRP', current_price: 0.48, price_change_percentage_24h: 1.7, market_cap: 21345678901, total_volume: 987654321 },
+                { id: 'polkadot', symbol: 'dot', name: 'Polkadot', current_price: 18.32, price_change_percentage_24h: -2.1, market_cap: 19876543210, total_volume: 876543210 },
+                { id: 'dogecoin', symbol: 'doge', name: 'Dogecoin', current_price: 0.12, price_change_percentage_24h: 3.4, market_cap: 15432109876, total_volume: 765432109 },
+                { id: 'avalanche', symbol: 'avax', name: 'Avalanche', current_price: 42.67, price_change_percentage_24h: 4.2, market_cap: 14321098765, total_volume: 654321098 },
+                { id: 'chainlink', symbol: 'link', name: 'Chainlink', current_price: 14.23, price_change_percentage_24h: -1.8, market_cap: 12345678901, total_volume: 543210987 },
+                { id: 'litecoin', symbol: 'ltc', name: 'Litecoin', current_price: 96.54, price_change_percentage_24h: 0.6, market_cap: 11234567890, total_volume: 432109876 },
+                { id: 'uniswap', symbol: 'uni', name: 'Uniswap', current_price: 8.76, price_change_percentage_24h: -3.2, market_cap: 10123456789, total_volume: 321098765 }
+            ];
+            return coins;
+        }
+        
+        // Format numbers
+        function formatNumber(num, digits = 2) {
+            if (num >= 1e9) {
+                return '$' + (num / 1e9).toFixed(digits) + 'B';
+            }
+            if (num >= 1e6) {
+                return '$' + (num / 1e6).toFixed(digits) + 'M';
+            }
+            if (num >= 1e3) {
+                return '$' + (num / 1e3).toFixed(digits) + 'K';
+            }
+            return '$' + num.toFixed(digits);
+        }
+        
+        // Format price based on value
+        function formatPrice(price) {
+            if (price < 0.01) {
+                return '$' + price.toFixed(6);
+            }
+            if (price < 1) {
+                return '$' + price.toFixed(4);
+            }
+            if (price < 10) {
+                return '$' + price.toFixed(3);
+            }
+            if (price < 1000) {
+                return '$' + price.toFixed(2);
+            }
+            return formatNumber(price);
+        }
+        
+        // Render cryptocurrency cards
+        function renderCryptoCards(data) {
+            if (!data || data.length === 0) {
+                cryptoGrid.innerHTML = `
+                    <div class="no-results">
+                        <h2>No cryptocurrencies found</h2>
+                        <p>Try adjusting your search term</p>
+                    </div>
+                `;
+                return;
+            }
