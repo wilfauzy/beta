@@ -1,54 +1,136 @@
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    });
+:root {
+    --neon-blue: #00f3ff;
+    --neon-pink: #ff00ff;
+    --dark-bg: #0a0a0a;
+    --cyber-border: 1px solid var(--neon-blue);
+    --cyber-text: #e0e0e0;
+    --cyber-glitch: #ff3366;
 }
 
-// Crypto Data Fetching
-const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1';
-const cryptoGrid = document.getElementById('cryptoGrid');
-const loading = document.getElementById('loading');
+body {
+    background-color: var(--dark-bg);
+    color: var(--cyber-text);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-async function fetchCryptoData() {
-    try {
-        loading.style.display = 'block';
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        displayCryptoData(data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        cryptoGrid.innerHTML = `<p class="error">Data stream interrupted. Attempting to reconnect...</p>`;
-    } finally {
-        loading.style.display = 'none';
+.cyber-header {
+    text-align: center;
+    padding: 2rem;
+    border-bottom: var(--cyber-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 243, 255, 0.2),
+        transparent
+    );
+    animation: cyber-glow 3s infinite;
+}
+
+@keyframes cyber-glow {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.cyber-header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    margin: 0;
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+.cyber-subtitle {
+    color: var(--neon-pink);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 2px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 2rem;
+    flex-grow: 1;
+}
+
+.crypto-card {
+    background: rgba(15, 15, 15, 0.9);
+    border: var(--cyber-border);
+    padding: 1rem;
+    border-radius: 5px;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.crypto-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px var(--neon-blue);
+}
+
+.price-up {
+    color: #00ff00;
+}
+
+.price-down {
+    color: #ff0000;
+}
+
+.cyber-footer {
+    border-top: var(--cyber-border);
+    padding: 2rem;
+    margin-top: auto;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    font-size: 1.5rem;
+}
+
+.social-links a {
+    color: var(--cyber-text);
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--neon-pink);
+}
+
+.footer-disclaimer {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr;
     }
 }
 
-function displayCryptoData(data) {
-    cryptoGrid.innerHTML = data.map(crypto => `
-        <div class="crypto-card">
-            <h3>${crypto.name} <span class="symbol">${crypto.symbol.toUpperCase()}</span></h3>
-            <p>Price: $${crypto.current_price}</p>
-            <p class="${crypto.price_change_percentage_24h >= 0 ? 'price-up' : 'price-down'}">
-                24h: ${crypto.price_change_percentage_24h.toFixed(2)}%
-            </p>
-            <p>Market Cap: $${crypto.market_cap.toLocaleString()}</p>
-            <p>Rank: #${crypto.market_cap_rank}</p>
-        </div>
-    `).join('');
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon-blue);
+    display: none;
 }
-
-// Initial load
-fetchCryptoData();
-
-// Auto-refresh every 30 seconds
-setInterval(fetchCryptoData, 30000);
-
-// PWA Service Worker (sw.js content)
-// Create this as a separate file named sw.js
