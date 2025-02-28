@@ -1,136 +1,110 @@
 :root {
-    --neon-blue: #00f3ff;
-    --neon-pink: #ff00ff;
-    --dark-bg: #0a0a0a;
-    --cyber-border: 1px solid var(--neon-blue);
-    --cyber-text: #e0e0e0;
-    --cyber-glitch: #ff3366;
+    --retro-green: #00ff00;
+    --retro-bg: #0a0a0a;
+    --retro-border: #333;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'VT323', monospace;
 }
 
 body {
-    background-color: var(--dark-bg);
-    color: var(--cyber-text);
-    font-family: 'Roboto', sans-serif;
+    background-color: var(--retro-bg);
+    color: var(--retro-green);
     margin: 0;
     padding: 0;
+    line-height: 1.6;
+    position: relative;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
-.cyber-header {
+.retro-header {
     text-align: center;
-    padding: 2rem;
-    border-bottom: var(--cyber-border);
+    padding: 1rem;
+    border-bottom: 3px solid var(--retro-border);
     position: relative;
     overflow: hidden;
 }
 
-.cyber-header::before {
-    content: '';
+.scanline {
     position: absolute;
     top: 0;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(0, 243, 255, 0.2),
-        transparent
-    );
-    animation: cyber-glow 3s infinite;
+    background: linear-gradient(to bottom,
+        transparent 50%,
+        rgba(0, 255, 0, 0.1) 51%,
+        transparent 51%);
+    animation: scan 5s linear infinite;
 }
 
-@keyframes cyber-glow {
-    0% { left: -100%; }
-    100% { left: 100%; }
+@keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
 }
 
-.cyber-header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 3rem;
-    margin: 0;
-    text-shadow: 0 0 10px var(--neon-blue);
-}
-
-.cyber-subtitle {
-    color: var(--neon-pink);
-    font-family: 'Orbitron', sans-serif;
-    letter-spacing: 2px;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-    padding: 2rem;
-    flex-grow: 1;
-}
-
-.crypto-card {
-    background: rgba(15, 15, 15, 0.9);
-    border: var(--cyber-border);
+#crypto-table {
     padding: 1rem;
-    border-radius: 5px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.crypto-item {
+    border: 2px solid var(--retro-border);
+    padding: 1rem;
     position: relative;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-.crypto-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 15px var(--neon-blue);
+.crypto-item:hover {
+    background-color: rgba(0, 255, 0, 0.05);
+    transform: scale(1.02);
 }
 
-.price-up {
-    color: #00ff00;
+.retro-footer {
+    border-top: 3px solid var(--retro-border);
+    padding: 2rem 1rem;
+    margin-top: 2rem;
 }
 
-.price-down {
-    color: #ff0000;
-}
-
-.cyber-footer {
-    border-top: var(--cyber-border);
-    padding: 2rem;
-    margin-top: auto;
-}
-
-.social-links {
-    display: flex;
-    justify-content: center;
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
-    font-size: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.social-links a {
-    color: var(--cyber-text);
-    transition: color 0.3s ease;
+.retro-link {
+    color: var(--retro-green);
+    text-decoration: none;
+    position: relative;
 }
 
-.social-links a:hover {
-    color: var(--neon-pink);
-}
-
-.footer-disclaimer {
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    opacity: 0.7;
+.retro-link:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {
-    .grid-container {
+    #crypto-table {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-grid {
         grid-template-columns: 1fr;
     }
 }
 
-#loading {
+/* PWA Install Prompt */
+#installPrompt {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Orbitron', sans-serif;
-    color: var(--neon-blue);
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--retro-bg);
+    border: 2px solid var(--retro-green);
+    padding: 1rem;
     display: none;
 }

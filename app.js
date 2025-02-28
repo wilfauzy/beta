@@ -1,9 +1,13 @@
-// Service Worker Registration
+const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false';
+
+let deferredPrompt;
+
+// Register Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
             .then(registration => {
-                console.log('ServiceWorker registration successful');
+                console.log('ServiceWorker registered');
             })
             .catch(err => {
                 console.log('ServiceWorker registration failed: ', err);
@@ -11,44 +15,59 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Crypto Data Fetching
-const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1';
-const cryptoGrid = document.getElementById('cryptoGrid');
-const loading = document.getElementById('loading');
-
+// Fetch crypto data
 async function fetchCryptoData() {
     try {
-        loading.style.display = 'block';
         const response = await fetch(API_URL);
         const data = await response.json();
-        displayCryptoData(data);
+        updateCryptoTable(data);
     } catch (error) {
         console.error('Error fetching data:', error);
-        cryptoGrid.innerHTML = `<p class="error">Data stream interrupted. Attempting to reconnect...</p>`;
-    } finally {
-        loading.style.display = 'none';
     }
 }
 
-function displayCryptoData(data) {
-    cryptoGrid.innerHTML = data.map(crypto => `
-        <div class="crypto-card">
-            <h3>${crypto.name} <span class="symbol">${crypto.symbol.toUpperCase()}</span></h3>
-            <p>Price: $${crypto.current_price}</p>
-            <p class="${crypto.price_change_percentage_24h >= 0 ? 'price-up' : 'price-down'}">
-                24h: ${crypto.price_change_percentage_24h.toFixed(2)}%
-            </p>
-            <p>Market Cap: $${crypto.market_cap.toLocaleString()}</p>
-            <p>Rank: #${crypto.market_cap_rank}</p>
+// Update display
+function updateCryptoTable(data) {
+    const container = document.getElementById('crypto-table');
+    container.innerHTML = data.map(coin => `
+        <div class="crypto-item">
+            <h3>${coin.name} (${coin.symbol.toUpperCase()})</h3>
+            <p>$${coin.current_price.toFixed(2)}</p>
+            <p>24h: ${coin.price_change_percentage_24h.toFixed(2)}%</p>
         </div>
     `).join('');
 }
 
-// Initial load
-fetchCryptoData();
-
 // Auto-refresh every 30 seconds
 setInterval(fetchCryptoData, 30000);
 
-// PWA Service Worker (sw.js content)
-// Create this as a separate file named sw.js
+// Initial load
+fetchCryptoData();
+
+// PWA Installation
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallPromotion();
+});
+
+function showInstallPromotion() {
+    const prompt = document.createElement('div');
+    prompt.id = 'installPrompt';
+    prompt.innerHTML = `
+        <p>Install app for better experience!</p>
+        <button onclick="installApp()">Install</button>
+    `;
+    document.body.appendChild(prompt);
+    prompt.style.display = 'block';
+}
+
+function installApp() {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choiceResult => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted install');
+        }
+        deferredPrompt = null;
+    });
+}

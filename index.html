@@ -1,50 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" amp>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoPulse - Live Top 100 Cryptocurrency Prices</title>
-    <meta name="description" content="Real-time tracking of top 100 cryptocurrencies with live prices, market data, and cyberpunk-inspired interface.">
-    <meta name="keywords" content="cryptocurrency, crypto prices, bitcoin, ethereum, blockchain, crypto market">
+    <meta name="description" content="Live cryptocurrency prices tracker with retro design - Top 100 coins updated every 30 seconds">
+    <meta name="keywords" content="crypto, cryptocurrency, bitcoin, ethereum, blockchain, prices">
+    <meta property="og:title" content="Retro Crypto Live Tracker">
+    <meta property="og:description" content="Real-time cryptocurrency prices with retro design interface">
+    <meta property="og:image" content="icon.png">
     
-    <!-- PWA Requirements -->
+    <!-- AMP Components -->
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a0a0a">
     
-    <!-- SEO Meta Tags -->
-    <meta property="og:title" content="CryptoPulse - Live Crypto Prices">
-    <meta property="og:description" content="Real-time tracking of top 100 cryptocurrencies">
-    <meta property="og:image" content="https://example.com/og-image.jpg">
+    <!-- Retro Style -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
-    <!-- Styles & Fonts -->
+    <title>Retro Crypto Live Tracker</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="apple-touch-icon" href="icon.png">
 </head>
 <body>
-    <header class="cyber-header">
-        <h1><span class="cyber-glitch">Crypto</span>Live</h1>
-        <p class="cyber-subtitle">Real-time Market Data Feed</p>
+    <header class="retro-header">
+        <h1>🕹️ RETRO CRYPTO TRACKER</h1>
+        <div class="scanline"></div>
     </header>
 
     <main>
-        <div class="grid-container" id="cryptoGrid"></div>
+        <div id="crypto-table"></div>
     </main>
 
-    <footer class="cyber-footer">
-        <div class="social-links">
-            <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="https://github.com" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-            <a href="https://telegram.org" target="_blank" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
-            <a href="https://discord.com" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
+    <footer class="retro-footer">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>Social Links</h3>
+                <ul>
+                    <li><a href="#" class="retro-link">🐦 Twitter</a></li>
+                    <li><a href="#" class="retro-link">💾 GitHub</a></li>
+                    <li><a href="#" class="retro-link">📰 Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Tools</h3>
+                <ul>
+                    <li><a href="#" class="retro-link">📈 Analytics</a></li>
+                    <li><a href="#" class="retro-link">🔮 Predictions</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="footer-disclaimer">
-            <p>Data updates every 30 seconds | Powered by CoinGecko API</p>
-            <p>© 2024 CryptoPulse. All data provided for informational purposes only.</p>
+        <div class="footer-copyright">
+            © 2024 Retro Crypto Tracker - CRT Style
         </div>
     </footer>
-
-    <div id="loading" class="cyber-loader">Initializing Data Stream...</div>
 
     <script src="app.js"></script>
 </body>
