@@ -1,73 +1,75 @@
-const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false';
-
+// PWA Installation
 let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.querySelector('.install-btn').style.display = 'block';
+});
 
-// Register Service Worker
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-            .then(registration => {
-                console.log('ServiceWorker registered');
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => console.log('SW registered'))
+            .catch(err => console.log('SW registration failed'));
     });
 }
 
-// Fetch crypto data
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+});
+
+// Fetch Crypto Data
 async function fetchCryptoData() {
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false');
         const data = await response.json();
-        updateCryptoTable(data);
+        populateCryptoTable(data);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 }
 
-// Update display
-function updateCryptoTable(data) {
-    const container = document.getElementById('crypto-table');
-    container.innerHTML = data.map(coin => `
-        <div class="crypto-item">
-            <h3>${coin.name} (${coin.symbol.toUpperCase()})</h3>
-            <p>$${coin.current_price.toFixed(2)}</p>
-            <p>24h: ${coin.price_change_percentage_24h.toFixed(2)}%</p>
-        </div>
-    `).join('');
-}
-
-// Auto-refresh every 30 seconds
-setInterval(fetchCryptoData, 30000);
-
-// Initial load
-fetchCryptoData();
-
-// PWA Installation
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    showInstallPromotion();
-});
-
-function showInstallPromotion() {
-    const prompt = document.createElement('div');
-    prompt.id = 'installPrompt';
-    prompt.innerHTML = `
-        <p>Install app for better experience!</p>
-        <button onclick="installApp()">Install</button>
-    `;
-    document.body.appendChild(prompt);
-    prompt.style.display = 'block';
-}
-
-function installApp() {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(choiceResult => {
-        if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted install');
-        }
-        deferredPrompt = null;
+function populateCryptoTable(data) {
+    const tbody = document.getElementById('cryptoList');
+    tbody.innerHTML = '';
+    
+    data.forEach((coin, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>
+                <img src="${coin.image}" alt="${coin.name}" width="20">
+                ${coin.name} (${coin.symbol.toUpperCase()})
+            </td>
+            <td>$${coin.current_price.toLocaleString()}</td>
+            <td class="${coin.price_change_percentage_24h > 0 ? 'positive' : 'negative'}">
+                ${coin.price_change_percentage_24h.toFixed(2)}%
+            </td>
+            <td>$${coin.market_cap.toLocaleString()}</td>
+        `;
+        tbody.appendChild(row);
     });
 }
+
+// Search Functionality
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#cryptoList tr');
+    
+    rows.forEach(row => {
+        const name = row.children[1].textContent.toLowerCase();
+        row.style.display = name.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Auto Refresh
+setInterval(fetchCryptoData, 30000);
+
+// Initial Load
+fetchCryptoData();

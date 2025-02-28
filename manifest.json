@@ -1,10 +1,11 @@
 {
-    "name": "CryptoWatch",
-    "short_name": "CryptoWatch",
+    "name": "Crypto Live",
+    "short_name": "CryptoLive",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#1a1a1a",
     "theme_color": "#2ecc71",
+    "description": "Pantau harga cryptocurrency real-time",
     "icons": [
         {
             "src": "/icon-192.png",
