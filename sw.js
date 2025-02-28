@@ -1,17 +1,17 @@
-const CACHE_NAME = 'cyber-crypto-v1';
+const CACHE_NAME = 'cryptopulse-v1';
 const ASSETS = [
     '/',
     '/index.html',
     '/styles.css',
     '/app.js',
-    '/icon-192x192.png',
-    '/icon-512x512.png'
+    // Tambahkan path ke asset lainnya jika ada
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(ASSETS))
+    );
 });
 
 self.addEventListener('fetch', (event) => {

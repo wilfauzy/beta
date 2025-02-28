@@ -1,51 +1,54 @@
-// Wallet Connect (Example using Web3Modal)
-document.getElementById('connectWallet').addEventListener('click', async () => {
-    try {
-        // Add actual wallet connection logic here
-        alert('Wallet connection feature coming soon!');
-    } catch (error) {
-        console.error('Wallet connection error:', error);
-    }
-});
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    });
+}
 
-// Fetch Crypto Data
+// Crypto Data Fetching
+const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1';
+const cryptoGrid = document.getElementById('cryptoGrid');
+const loading = document.getElementById('loading');
+
 async function fetchCryptoData() {
     try {
-        const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false');
+        loading.style.display = 'block';
+        const response = await fetch(API_URL);
         const data = await response.json();
         displayCryptoData(data);
     } catch (error) {
-        console.error('Error fetching crypto data:', error);
+        console.error('Error fetching data:', error);
+        cryptoGrid.innerHTML = `<p class="error">Data stream interrupted. Attempting to reconnect...</p>`;
+    } finally {
+        loading.style.display = 'none';
     }
 }
 
-// Display Crypto Data
 function displayCryptoData(data) {
-    const container = document.getElementById('cryptoContainer');
-    container.innerHTML = '';
-
-    data.forEach(coin => {
-        const card = document.createElement('div');
-        card.className = 'crypto-card';
-        card.innerHTML = `
-            <div class="crypto-header">
-                <img src="${coin.image}" alt="${coin.name}" width="30">
-                <h3>${coin.name}</h3>
-                <span>${coin.symbol.toUpperCase()}</span>
-            </div>
-            <div class="crypto-price">
-                <p>$${coin.current_price.toLocaleString()}</p>
-                <p class="${coin.price_change_percentage_24h < 0 ? 'negative' : 'positive'}">
-                    ${coin.price_change_percentage_24h.toFixed(2)}%
-                </p>
-            </div>
-        `;
-        container.appendChild(card);
-    });
+    cryptoGrid.innerHTML = data.map(crypto => `
+        <div class="crypto-card">
+            <h3>${crypto.name} <span class="symbol">${crypto.symbol.toUpperCase()}</span></h3>
+            <p>Price: $${crypto.current_price}</p>
+            <p class="${crypto.price_change_percentage_24h >= 0 ? 'price-up' : 'price-down'}">
+                24h: ${crypto.price_change_percentage_24h.toFixed(2)}%
+            </p>
+            <p>Market Cap: $${crypto.market_cap.toLocaleString()}</p>
+            <p>Rank: #${crypto.market_cap_rank}</p>
+        </div>
+    `).join('');
 }
+
+// Initial load
+fetchCryptoData();
 
 // Auto-refresh every 30 seconds
 setInterval(fetchCryptoData, 30000);
 
-// Initial load
-fetchCryptoData();
+// PWA Service Worker (sw.js content)
+// Create this as a separate file named sw.js
