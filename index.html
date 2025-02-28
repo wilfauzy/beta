@@ -1,58 +1,242 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Crypto Live - Pantau Harga Cryptocurrency Top 100 Secara Real-Time">
-    <meta name="keywords" content="crypto, cryptocurrency, bitcoin, ethereum, harga kripto">
-    <title>Crypto Live - Harga Cryptocurrency Terkini</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Live Crypto Prices with Cyberpunk 2077 Style">
+    <meta name="keywords" content="crypto, cryptocurrency, bitcoin, cyberpunk, prices">
+    <title>CyberCrypto 2077</title>
     <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS Cyberpunk Style */
+        :root {
+            --neon-cyan: #0ff;
+            --neon-pink: #f0f;
+            --bg-dark: #000;
+            --text-primary: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .glow {
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* Header Styles */
+        .header {
+            padding: 1rem;
+            border-bottom: 3px solid var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem;
+            margin: 2rem 0;
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+        }
+
+        /* Crypto Table */
+        .crypto-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+
+        .crypto-table th,
+        .crypto-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--neon-cyan);
+        }
+
+        .crypto-table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: #111;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .crypto-table thead {
+                display: none;
+            }
+
+            .crypto-table tr {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                margin-bottom: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* PWA Badge */
+        .pwa-badge {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: var(--neon-pink);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <header class="cyberpunk">
-        <nav>
-            <div class="logo">CRYPTO LIVE</div>
-            <ul class="nav-links">
-                <li><a href="#home">Beranda</a></li>
-                <li><a href="#market">Pasar</a></li>
-                <li><a href="#about">Tentang</a></li>
-                <li><a href="#contact">Kontak</a></li>
-            </ul>
+    <header class="header">
+        <nav class="nav">
+            <h1 class="glow">⚡ CyberCrypto 2077</h1>
+            <div class="nav-links">
+                <a href="#home" class="glow">Home</a>
+                <a href="#market" class="glow">Market</a>
+                <a href="#about" class="glow">About</a>
+            </div>
         </nav>
     </header>
 
-    <section class="hero cyberpunk">
-        <div class="hero-content">
-            <h1 class="neon-text">MASA DEPAN KEUANGAN</h1>
-            <p>Pantau Pergerakan Harga 100 Kripto Teratas Secara Real-Time</p>
-        </div>
-    </section>
-
-    <main>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Cari Cryptocurrency...">
-        </div>
-        
-        <div id="cryptoList" class="crypto-grid"></div>
+    <main class="container">
+        <input type="text" class="search-box" placeholder="Search Crypto..." id="searchInput">
+        <table class="crypto-table" id="cryptoTable">
+            <thead>
+                <tr>
+                    <th>Coin</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                    <th>Market Cap</th>
+                </tr>
+            </thead>
+            <tbody id="cryptoData">
+                <!-- Data will be populated by JS -->
+            </tbody>
+        </table>
     </main>
 
-    <footer class="cyberpunk">
+    <footer class="footer">
         <div class="social-links">
-            <a href="#"><i class="fab fa-twitter neon-hover"></i></a>
-            <a href="#"><i class="fab fa-telegram neon-hover"></i></a>
-            <a href="#"><i class="fab fa-discord neon-hover"></i></a>
-            <a href="#"><i class="fab fa-github neon-hover"></i></a>
+            <a href="#" class="glow"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="glow"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="glow"><i class="fab fa-github"></i></a>
         </div>
-        <p>&copy; 2024 Crypto Live. All rights reserved.</p>
+        <div class="footer-menu">
+            <a href="#privacy" class="glow">Privacy Policy</a>
+            <a href="#terms" class="glow">Terms of Service</a>
+            <a href="#contact" class="glow">Contact</a>
+        </div>
     </footer>
 
-    <script src="app.js"></script>
     <script>
+        // Fetch Crypto Data
+        async function fetchCryptoData() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false');
+                const data = await response.json();
+                updateTable(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Update Table
+        function updateTable(data) {
+            const tbody = document.getElementById('cryptoData');
+            tbody.innerHTML = '';
+
+            data.forEach(coin => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <img src="${coin.image}" alt="${coin.name}" width="20">
+                        ${coin.name} (${coin.symbol.toUpperCase()})
+                    </td>
+                    <td>$${coin.current_price}</td>
+                    <td style="color: ${coin.price_change_percentage_24h >= 0 ? '#0f0' : '#f00'}">
+                        ${coin.price_change_percentage_24h.toFixed(2)}%
+                    </td>
+                    <td>$${coin.market_cap.toLocaleString()}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#cryptoData tr');
+            
+            rows.forEach(row => {
+                const name = row.textContent.toLowerCase();
+                row.style.display = name.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Auto Refresh
+        setInterval(fetchCryptoData, 30000);
+
+        // Initial Load
+        fetchCryptoData();
+
+        // PWA Registration
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered');
+                    }).catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
         }
     </script>
 </body>
