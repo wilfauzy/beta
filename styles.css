@@ -1,160 +1,54 @@
-:root {
-    --neon-cyan: #0ff;
-    --neon-pink: #f0f;
-    --dark-bg: #0a0a0f;
-    --cyber-gradient: linear-gradient(45deg, #0ff, #f0f);
-}
-
-* {
+body {
+    font-family: monospace;
+    background-color: #000;
+    color: #fff;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Orbitron', sans-serif;
 }
 
-body {
-    background-color: var(--dark-bg);
-    color: #fff;
-    min-height: 100vh;
-}
-
-.cyberpunk {
-    border-bottom: 3px solid var(--neon-cyan);
-    box-shadow: 0 0 15px var(--neon-cyan);
-}
-
-header {
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    background: var(--dark-bg);
-    z-index: 100;
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
+header, footer {
+    background-color: #222;
+    padding: 10px;
+    text-align: center;
 }
 
 .logo {
-    font-size: 2rem;
-    background: var(--cyber-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.nav-links {
     display: flex;
-    gap: 2rem;
-    list-style: none;
-}
-
-.nav-links a {
-    color: #fff;
-    text-decoration: none;
-    position: relative;
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--neon-cyan);
-    transition: width 0.3s;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
-.hero {
-    padding: 4rem 1rem;
-    text-align: center;
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('cyber-bg.jpg');
-    background-size: cover;
-    background-position: center;
-}
-
-.neon-text {
-    text-shadow: 0 0 10px var(--neon-cyan),
-                 0 0 20px var(--neon-cyan),
-                 0 0 30px var(--neon-cyan);
-}
-
-.crypto-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.crypto-card {
-    background: rgba(255,255,255,0.05);
-    padding: 1.5rem;
-    border-radius: 10px;
-    border: 1px solid var(--neon-cyan);
-    transition: transform 0.3s;
-}
-
-.crypto-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 15px var(--neon-cyan);
-}
-
-.search-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-#searchInput {
-    width: 100%;
-    padding: 1rem;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid var(--neon-cyan);
-    color: #fff;
-    border-radius: 5px;
-}
-
-footer {
-    text-align: center;
-    padding: 2rem;
-    margin-top: 4rem;
-}
-
-.social-links {
-    display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 2rem;
-    margin-bottom: 1rem;
 }
 
-.neon-hover {
-    transition: text-shadow 0.3s;
+.logo img {
+    width: 50px; /* Sesuaikan ukuran logo */
+    margin-right: 10px;
 }
 
-.neon-hover:hover {
-    text-shadow: 0 0 10px var(--neon-cyan);
+.search-bar {
+    margin-top: 10px;
 }
 
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-    }
-    
-    .crypto-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .hero h1 {
-        font-size: 2rem;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Gaya Pixel Art (Contoh) */
+body {
+    font-family: 'Press Start 2P', cursive; /* Contoh font pixel */
+}
+
+/* Responsif */
+@media (max-width: 600px) {
+    /* Gaya untuk tampilan mobile */
+    .logo {
+        flex-direction: column;
     }
 }
+/*Tambahkan animasi disini*/
